@@ -1,3 +1,5 @@
+package map
+
 class Coordinates(row : Int, col : Int) {
     private var _columnNumber = col
     var columnNumber : Int
@@ -12,6 +14,10 @@ class Coordinates(row : Int, col : Int) {
         set(value) {
             _rowNumber = value
         }
+
+    fun getCoordinates() : Pair<Int, Int> {
+        return Pair(_columnNumber, _rowNumber)
+    }
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

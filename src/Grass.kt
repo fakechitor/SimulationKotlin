@@ -1,3 +1,0 @@
-class Grass : Entity() {
-
-}

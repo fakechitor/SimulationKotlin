@@ -1,11 +1,14 @@
 package search
 
+import map.AMOUNT_OF_COLUMNS
+import map.AMOUNT_OF_ROWS
 import map.Coordinates
 import map.Map
 import java.util.*
+import kotlin.math.max
 
 private const val MINIMAL_COORDINATE = 1
-private const val MAXIMAL_COORDINATE = 10
+private val MAXIMAL_COORDINATE = max(AMOUNT_OF_ROWS, AMOUNT_OF_COLUMNS)
 
 class BreadthFirstSearch {
     private var checkedCells : MutableList<Pair<Int,Int>> = mutableListOf()
