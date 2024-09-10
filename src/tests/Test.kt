@@ -7,7 +7,4 @@ import search.BreadthFirstSearch
 
 fun main() {
     val simm = Simulation()
-    simm.initSimulation()
-    simm.printMap()
-
 }
