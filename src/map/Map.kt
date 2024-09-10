@@ -1,5 +1,6 @@
 package map
 
+import entities.Entity
 import entities.Herbivore
 import kotlin.random.Random
 
@@ -8,6 +9,10 @@ const val AMOUNT_OF_ROWS = 10
 
 class Map {
     private var map : MutableMap<Coordinates, Any> = mutableMapOf()
+
+    fun getMap(): MutableMap<Coordinates, Any> {
+        return map
+    }
 
     fun createMap() : MutableMap<Coordinates, Any> {
         for (i in 1..AMOUNT_OF_COLUMNS) {
@@ -29,15 +34,19 @@ class Map {
         }
     }
 
+    fun getCellStatus(coordinates: Coordinates) : Any? {
+        val cellData  = map[coordinates]
+        if (cellData is Entity){
+            return cellData.entityName
+        }
+        return ""
+    }
+
     private fun checkIfCellIsOccupied(col : Int, row : Int) : Boolean {
         return getCellStatus(Coordinates(row,col)) == ""
     }
 
-    private fun setEntity(entity: Any, coordinates : Coordinates){
+    fun setEntity(entity: Any, coordinates : Coordinates){
         map[coordinates] = entity
-    }
-
-    fun getCellStatus(coordinates: Coordinates) : Any? {
-        return map[coordinates]
     }
 }

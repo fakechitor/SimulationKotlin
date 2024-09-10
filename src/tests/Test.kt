@@ -1,14 +1,13 @@
 package tests
 
-import Emoji
 import Simulation
-import entities.Rock
+import entities.Herbivore
 import map.Coordinates
-import map.MapRenderer
+import search.BreadthFirstSearch
 
 fun main() {
-    val game = Simulation()
-    game.startSimulation()
-    game.printMap()
-    println(game)
+    val simm = Simulation()
+    simm.initSimulation()
+    simm.printMap()
+
 }

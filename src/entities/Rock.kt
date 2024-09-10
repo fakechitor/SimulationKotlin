@@ -1,5 +1,5 @@
 package entities
 
-class Rock(name : String) : Entity() {
+class Rock (name : String) : Entity() {
     override val entityName = name
 }
