@@ -36,10 +36,7 @@ class Map {
 
     fun getCellStatus(coordinates: Coordinates) : Any? {
         val cellData  = map[coordinates]
-        if (cellData is Entity){
-            return cellData.entityName
-        }
-        return ""
+        return cellData
     }
 
     private fun checkIfCellIsOccupied(col : Int, row : Int) : Boolean {
