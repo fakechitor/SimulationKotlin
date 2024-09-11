@@ -2,18 +2,7 @@ package map
 
 class Coordinates(row : Int, col : Int) {
     private var _columnNumber = col
-    var columnNumber : Int
-        get() = _columnNumber
-        set(value) {
-            _columnNumber = value
-        }
-
     private var _rowNumber = row
-    var rowNumber : Int
-        get() = _rowNumber
-        set(value) {
-            _rowNumber = value
-        }
 
     fun getCoordinates() : Pair<Int, Int> {
         return Pair(_columnNumber, _rowNumber)
