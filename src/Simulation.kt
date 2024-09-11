@@ -29,19 +29,10 @@ class Simulation {
 
     private fun nextTurn() {
         amountOfTurns++
-        val tempMap  : Map = map
-        for(i in map.getMap().entries) {
-            val coordinate = i.toPair().first
-            val entity = i.toPair().second
-            if (entity is Herbivore){
-                entity.makeMove(coordinate, tempMap)
-            }
-            else if (entity is Predator){
-
-            }
-        }
-        map = tempMap
+        turnActions()
     }
+
+
 
     private fun printMap(){
         MapRenderer().renderMap(map)
@@ -82,8 +73,8 @@ class Simulation {
                 Rabbit -> {createEntity(Herbivore("Rabbit"))}
                 Wolf -> {createEntity(Predator("Wolf"))}
                 Rock -> {createEntity(entities.Rock("Rock"))}
-                Tree -> {createEntity(Herbivore("Tree"))}
-                Grass -> {createEntity(Herbivore("Grass"))}
+                Tree -> {createEntity(entities.Tree("Tree"))}
+                Grass -> {createEntity(entities.Grass("Grass"))}
             }
         }
     }
@@ -102,11 +93,28 @@ class Simulation {
     }
 
     private fun turnActions(){
+        var tempMap: Map = map
+        for(i in map.getMap().entries) {
+            val coordinate = i.toPair().first
+            val entity = i.toPair().second
+            if (entity is Herbivore){
+                tempMap = entity.makeMove(coordinate, tempMap)
+                println(tempMap)
+            }
+            else if (entity is Predator){
 
+            }
+        }
+        this.map = tempMap
     }
 
     private fun checkGameStats(){
 
     }
     
+}
+
+fun main() {
+    val game = Simulation()
+    game.startSimulation()
 }
