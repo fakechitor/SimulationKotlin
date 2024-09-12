@@ -10,13 +10,14 @@ private const val HERBIVORE_HEALTH_POINTS = 10
 private const val HERBIVORE_ATTACK_RANGE = 3
 
 
-class Herbivore(name : String) : Creature() {
+class Herbivore() : Creature() {
     override var amountOfSpeed = HERBIVORE_SPEED
     override var healthPoints  = HERBIVORE_HEALTH_POINTS
-    override val entityName = name
+    override val entityName = "Rabbit"
     override fun makeMove(startCoordinates: Coordinates, map: map.Map): map.Map {
-        var tempMap = map
+        var tempMap : Map = map
         val pathForGrass = BreadthFirstSearch().bfs(startCoordinates, map, "Grass")
+
         val coordinatesForNextMove: Pair<Int, Int>
         if (!pathForGrass.isNullOrEmpty()) {
             if (pathForGrass.size <= HERBIVORE_ATTACK_RANGE) {
@@ -26,21 +27,18 @@ class Herbivore(name : String) : Creature() {
                 coordinatesForNextMove = pathForGrass[HERBIVORE_SPEED - 1]
                 val currentEntity = map.getMap()[startCoordinates]
                 if (currentEntity is Creature) {
-                    tempMap.setEntity(
-                        currentEntity,
-                        Coordinates(coordinatesForNextMove.first, coordinatesForNextMove.second)
-                    )
+                    tempMap.setEntity(currentEntity, Coordinates(coordinatesForNextMove.first, coordinatesForNextMove.second))
                 }
             }
         }
-        return map
+        return tempMap
 
 
     }
 
     override fun eatFood(startCoordinates: Coordinates, map: Map, newCoordinates: Coordinates) : map.Map {
         val currentEntity = map.getMap()[startCoordinates]
-        if (currentEntity != null) {
+        if (currentEntity != null && currentEntity is Creature) {
             map.setEntity(currentEntity,newCoordinates)
             map.setEntity("",startCoordinates)
         }

@@ -70,11 +70,11 @@ class Simulation {
     private fun initAllTypesOfEntities(map: Map){
         for (entity in Entities.entries){
             when(entity){
-                Rabbit -> {createEntity(Herbivore("Rabbit"))}
-                Wolf -> {createEntity(Predator("Wolf"))}
-                Rock -> {createEntity(entities.Rock("Rock"))}
-                Tree -> {createEntity(entities.Tree("Tree"))}
-                Grass -> {createEntity(entities.Grass("Grass"))}
+                Rabbit -> {createEntity(Herbivore())}
+                Wolf -> {createEntity(Predator())}
+                Rock -> {createEntity(entities.Rock())}
+                Tree -> {createEntity(entities.Tree())}
+                Grass -> {createEntity(entities.Grass())}
             }
         }
     }
@@ -99,7 +99,6 @@ class Simulation {
             val entity = i.toPair().second
             if (entity is Herbivore){
                 tempMap = entity.makeMove(coordinate, tempMap)
-                println(tempMap)
             }
             else if (entity is Predator){
 

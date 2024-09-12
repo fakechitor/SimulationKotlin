@@ -1,11 +1,11 @@
 package map
 
 class Coordinates(row : Int, col : Int) {
-    private var _columnNumber = col
-    private var _rowNumber = row
+    private var columnNumber = col
+    private var rowNumber = row
 
     fun getCoordinates() : Pair<Int, Int> {
-        return Pair(_columnNumber, _rowNumber)
+        return Pair(rowNumber,columnNumber)
     }
 
     override fun equals(other: Any?): Boolean {
@@ -14,15 +14,15 @@ class Coordinates(row : Int, col : Int) {
 
         other as Coordinates
 
-        if (_columnNumber != other._columnNumber) return false
-        if (_rowNumber != other._rowNumber) return false
+        if (columnNumber != other.columnNumber) return false
+        if (rowNumber != other.rowNumber) return false
 
         return true
     }
 
     override fun hashCode(): Int {
-        var result = _columnNumber
-        result = 31 * result + _rowNumber
+        var result = columnNumber
+        result = 31 * result + rowNumber
         return result
     }
 
