@@ -63,6 +63,7 @@ class Simulation {
     private fun initSimulation(){
         map = Map()
         map.createMap()
+        printMap()
         initAllTypesOfEntities(map)
 
     }
@@ -92,19 +93,19 @@ class Simulation {
         }
     }
 
-    private fun turnActions(){
-        var tempMap: Map = map
-        for(i in map.getMap().entries) {
-            val coordinate = i.toPair().first
-            val entity = i.toPair().second
-            if (entity is Herbivore){
-                tempMap = entity.makeMove(coordinate, tempMap)
-            }
-            else if (entity is Predator){
+    private fun turnActions() {
+        val currentMap = map.getMap()
+        val iterator = currentMap.entries.iterator()
+
+        while (iterator.hasNext()) {
+            val (coordinate, entity) = iterator.next()
+
+            if (entity is Herbivore) {
+                map = entity.makeMove(coordinate, map)
+            } else if (entity is Predator) {
 
             }
         }
-        this.map = tempMap
     }
 
     private fun checkGameStats(){
