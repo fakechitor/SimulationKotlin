@@ -63,7 +63,6 @@ class Simulation {
     private fun initSimulation(){
         map = Map()
         map.createMap()
-        printMap()
         initAllTypesOfEntities(map)
 
     }
@@ -94,7 +93,7 @@ class Simulation {
     }
 
     private fun turnActions() {
-        val currentMap = map.getMap()
+        val currentMap = map.getMap().toMap() // Create a copy of the map
         val iterator = currentMap.entries.iterator()
 
         while (iterator.hasNext()) {
@@ -103,7 +102,7 @@ class Simulation {
             if (entity is Herbivore) {
                 map = entity.makeMove(coordinate, map)
             } else if (entity is Predator) {
-
+                // Predator logic
             }
         }
     }

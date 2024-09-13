@@ -17,7 +17,6 @@ class Herbivore() : Creature() {
     override fun makeMove(startCoordinates: Coordinates, map: map.Map): map.Map {
         var tempMap : Map = map
         val pathForGrass = BreadthFirstSearch().bfs(startCoordinates, map, "Grass")
-
         val coordinatesForNextMove: Pair<Int, Int>
         if (!pathForGrass.isNullOrEmpty()) {
             if (pathForGrass.size <= HERBIVORE_ATTACK_RANGE) {
@@ -37,11 +36,12 @@ class Herbivore() : Creature() {
     }
 
     override fun eatFood(startCoordinates: Coordinates, map: Map, newCoordinates: Coordinates) : map.Map {
+        val newMap = map
         val currentEntity = map.getMap()[startCoordinates]
         if (currentEntity != null && currentEntity is Creature) {
-            map.setEntity(currentEntity,newCoordinates)
-            map.setEntity("",startCoordinates)
+            newMap.setEntity(currentEntity,newCoordinates)
+            newMap.setEntity("",startCoordinates)
         }
-        return map
+        return newMap
     }
 }

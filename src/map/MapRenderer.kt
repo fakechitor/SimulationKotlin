@@ -1,7 +1,7 @@
 package map
 
 import Emoji
-import entities.Entity
+import entities.Entities
 
 
 
@@ -11,8 +11,8 @@ class MapRenderer {
             for (j in 1..AMOUNT_OF_COLUMNS){
                 val name = map.getCellStatus(Coordinates(i, j))
                 var emoji = "\uD83D\uDFEB"
-                if (name is Entity){
-                    emoji = Emoji().getEmoji(name.entityName).toString()
+                if (name != ""){
+                    emoji = Emoji().getEmoji(name.toString()).toString()
                 }
                 print(emoji)
             }

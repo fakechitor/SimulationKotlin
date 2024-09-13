@@ -1,7 +1,6 @@
 package map
 
-import entities.Entity
-import entities.Herbivore
+import entities.*
 import kotlin.random.Random
 
 const val AMOUNT_OF_COLUMNS = 15
@@ -40,6 +39,14 @@ class Map {
 
     fun getCellStatus(coordinates: Coordinates) : Any? {
         val cellData  = map[coordinates]
+        when(cellData){
+            is Herbivore -> return Entities.Rabbit.toString()
+            is Predator -> return Entities.Wolf.toString()
+            is Rock -> return Entities.Rock.toString()
+            is Tree -> return Entities.Tree.toString()
+            is Grass -> return Entities.Grass.toString()
+            is String -> return ""
+        }
         return cellData
     }
 
