@@ -19,7 +19,7 @@ private val MAX_AMOUNT_OF_ENTITIES : kotlin.collections.Map<String, Int> = mapOf
 class Simulation {
     private var amountOfTurns : Int = 0
     private lateinit var map : Map
-    private var entityData : MutableList<Entity> = mutableListOf() // TODO()
+   private val gameData = GameData()
 
     fun startSimulation() {
         initSimulation()
@@ -30,6 +30,7 @@ class Simulation {
     private fun nextTurn() {
         amountOfTurns++
         turnActions()
+        println( gameData.getCurrentGameStats(map))
     }
 
 
@@ -40,19 +41,24 @@ class Simulation {
 
 
     private fun printGameInfo(){
-      println("Текущий ход: $amountOfTurns")
-      printMap()
-      println("Введите $START_LOOP_SIMULATION_CODE, чтобы запустить цикл симуляции")
-      println("Введите $NEXT_TURN_SIMULATION_CODE, чтобы запустить следующий ход симуляции")
-      println("Введите $STOP_SIMULATION_CODE, чтобы остановть симуляцию")
+        println("Текущий ход: $amountOfTurns")
+        printMap()
+        println("Введите $START_LOOP_SIMULATION_CODE, чтобы запустить цикл симуляции")
+        println("Введите $NEXT_TURN_SIMULATION_CODE, чтобы запустить следующий ход симуляции")
+        println("Введите $STOP_SIMULATION_CODE, чтобы остановть симуляцию")
+        println()
+
+
     }
 
     private fun startGameLoop(){
         while (true){
             nextTurn()
             val userInput = readln()
+            if (userInput == "0"){
+                break
+            }
             printGameInfo()
-            break
         }
     }
 
@@ -64,7 +70,6 @@ class Simulation {
         map = Map()
         map.createMap()
         initAllTypesOfEntities(map)
-
     }
 
     private fun initAllTypesOfEntities(map: Map){
@@ -95,20 +100,15 @@ class Simulation {
     private fun turnActions() {
         val currentMap = map.getMap().toMap() // Create a copy of the map
         val iterator = currentMap.entries.iterator()
-
         while (iterator.hasNext()) {
             val (coordinate, entity) = iterator.next()
 
             if (entity is Herbivore) {
                 map = entity.makeMove(coordinate, map)
             } else if (entity is Predator) {
-                // Predator logic
+                map = entity.makeMove(coordinate, map)
             }
         }
-    }
-
-    private fun checkGameStats(){
-
     }
     
 }
