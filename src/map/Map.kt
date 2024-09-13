@@ -27,10 +27,12 @@ class Map {
     }
 
     fun createEntityOnRandomCoordinates(entity : Any){
+        var randomRow : Int
+        var randomColumn : Int
         while(true){
-            val randomRow = Random.nextInt(1, AMOUNT_OF_ROWS)
-            val randomColumn = Random.nextInt(1, AMOUNT_OF_COLUMNS)
-            if (checkIfCellIsOccupied(randomRow, randomColumn)) {
+            randomRow = Random.nextInt(1, AMOUNT_OF_ROWS)
+            randomColumn = Random.nextInt(1, AMOUNT_OF_COLUMNS)
+            if (isCellEmpty(randomRow, randomColumn)) {
                 setEntity(entity, Coordinates(randomRow, randomColumn))
                 break
             }
@@ -50,7 +52,7 @@ class Map {
         return cellData
     }
 
-    private fun checkIfCellIsOccupied(col : Int, row : Int) : Boolean {
+    private fun isCellEmpty(row : Int,col : Int) : Boolean {
         return getCellStatus(Coordinates(row,col)) == ""
     }
 
