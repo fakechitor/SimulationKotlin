@@ -29,7 +29,7 @@ class BreadthFirstSearch {
                 occupiedCells.add(Pair(current.first,current.second))
                 continue
             }
-            else if (cellStatus == requiredEntity) {
+            else if (cellStatus.toString() == requiredEntity) {
                 return reconstructPath(parentMap, current)
             }
             val linkedNodes = makeLinkedNodesUnique(current)

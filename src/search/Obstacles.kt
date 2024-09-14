@@ -2,5 +2,6 @@ package search
 
 enum class Obstacles {
     Tree,
-    Rock
+    Rock,
+    Wolf
 }
