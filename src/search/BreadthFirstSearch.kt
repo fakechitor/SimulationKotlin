@@ -1,5 +1,9 @@
 package search
 
+import entities.Creature
+import entities.Entities
+import entities.Entity
+import entities.Herbivore
 import map.AMOUNT_OF_COLUMNS
 import map.AMOUNT_OF_ROWS
 import map.Coordinates
@@ -16,6 +20,7 @@ class BreadthFirstSearch {
     private val occupiedCells : MutableList<Pair<Int,Int>> = mutableListOf()
 
     fun bfs(startCoordinates: Coordinates, map: Map, requiredEntity: String): List<Pair<Int, Int>>? {
+        val creature = checkTypeOfCreature(startCoordinates, map)
         val pairOfStartCoordinates = startCoordinates.getCoordinates()
         val parentMap = mutableMapOf<Pair<Int, Int>, Pair<Int, Int>?>()
         queue.add(pairOfStartCoordinates)
@@ -25,8 +30,8 @@ class BreadthFirstSearch {
         while (queue.isNotEmpty()) {
             val current = queue.poll()
             val cellStatus = map.getCellStatus(Coordinates(current.first, current.second))
-            if (cellStatus in Obstacles.entries){
-                occupiedCells.add(Pair(current.first,current.second))
+
+            if (isCellOccupied(current, cellStatus, creature)) {
                 continue
             }
             else if (cellStatus.toString() == requiredEntity) {
@@ -40,6 +45,38 @@ class BreadthFirstSearch {
             }
         }
         return null
+    }
+
+    private fun isCellOccupied(coordinatesPair: Pair<Int, Int>, currentCell : Any?, creature : String) : Boolean{
+        val setOfObstacles = getObstaclesForCell(creature)
+        if (currentCell is Creature && currentCell.entityName in setOfObstacles){
+            occupiedCells.add(coordinatesPair)
+            return true
+        }
+        return false
+    }
+
+    private fun getObstaclesForCell(creature: String): Set<String> {
+        var setOfObstacles = setOf<Any>()
+        val newSetOfObstacles = mutableSetOf<String>()
+        if (creature == "Herbivore"){
+            setOfObstacles = HerbivoreObstacles.entries.toSet()
+        }
+        else{
+            setOfObstacles = PredatorObstacles.entries.toSet()
+        }
+        for (obstacle in setOfObstacles){
+            newSetOfObstacles.add(obstacle.toString())
+        }
+        return newSetOfObstacles
+    }
+
+    private fun checkTypeOfCreature(startCoordinates: Coordinates, map: Map) : String{
+        val cellStatus = map.getCellStatus(startCoordinates)
+        if (cellStatus is Herbivore){
+            return "Herbivore"
+        }
+        return "Predator"
     }
 
     private fun getLinkedNodes(coordinatesPair : Pair<Int,Int>) : List<Pair<Int,Int>>{
