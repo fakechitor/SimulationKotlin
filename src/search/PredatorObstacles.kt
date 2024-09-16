@@ -1,7 +1,8 @@
 package search
 
-enum class Obstacles {
+enum class PredatorObstacles {
     Tree,
     Rock,
+    Grass,
     Wolf
 }
