@@ -118,29 +118,3 @@ class BreadthFirstSearch {
         return path
     }
 }
-
-//fun main() {
-//    val test = BreadthFirstSearch()
-//    val map = Map()
-//    val mymap = mutableMapOf(
-//        Coordinates(1,1) to "",
-//        Coordinates(1,2) to "",
-//        Coordinates(1,3) to "",
-//        Coordinates(1,4) to "",
-//        Coordinates(2,1) to Herbivore(),
-//        Coordinates(2,2) to "",
-//        Coordinates(2,3) to Grass(),
-//        Coordinates(2,4) to "",
-//        Coordinates(3,1) to Rock(),
-//        Coordinates(3,2) to Tree(),
-//        Coordinates(3,3) to Predator(),
-//        Coordinates(3,4) to "",
-//        Coordinates(4,1) to Predator(),
-//        Coordinates(4,2) to "",
-//        Coordinates(4,3) to "",
-//        Coordinates(4,4) to "",
-//    )
-//    map.setMap(mymap)
-//    val path= test.bfs(Coordinates(2,1),map,"Grass")
-//    println(path)
-//}
