@@ -1,4 +1,3 @@
-import entities.Entities
 import entities.Entity
 
 class GameData {

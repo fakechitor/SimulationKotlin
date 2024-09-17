@@ -12,6 +12,9 @@ class Map {
     fun getMap(): MutableMap<Coordinates, Any> {
         return map
     }
+    fun setMap(map : MutableMap<Coordinates, Any>) {
+        this.map = map
+    }
 
     fun createMap() : MutableMap<Coordinates, Any> {
         for (i in 1..AMOUNT_OF_ROWS) {
@@ -54,10 +57,6 @@ class Map {
 
     fun setEntity(entity: Any, coordinates : Coordinates){
         map[coordinates] = entity
-    }
-    fun removeEntity(coordinates : Coordinates){
-        map.remove(coordinates)
-        map[coordinates] = ""
     }
 
 }

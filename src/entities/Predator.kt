@@ -1,6 +1,5 @@
 package entities
 
-import Simulation
 import map.Coordinates
 import map.Map
 import search.BreadthFirstSearch
@@ -15,17 +14,18 @@ class Predator() : Creature() {
     override val entityName = "Wolf"
     override fun makeMove(startCoordinates: Coordinates, map: map.Map): Map {
         var tempMap : Map = map
-        val pathForGrass = BreadthFirstSearch().bfs(startCoordinates, map, "Rabbit")
+        val pathForHerbivore = BreadthFirstSearch().bfs(startCoordinates, map, "Rabbit")
         val coordinatesForNextMove: Pair<Int, Int>
-        if (!pathForGrass.isNullOrEmpty()) {
-            if (pathForGrass.size <= PREDATOR_ATTACK_RANGE) {
-                coordinatesForNextMove = pathForGrass.last()
+        if (!pathForHerbivore.isNullOrEmpty()) {
+            if (pathForHerbivore.size <= PREDATOR_ATTACK_RANGE) {
+                coordinatesForNextMove = pathForHerbivore.last()
                 tempMap = eatFood(startCoordinates, map, Coordinates(coordinatesForNextMove.first, coordinatesForNextMove.second))
             } else {
-                coordinatesForNextMove = pathForGrass[PREDATOR_SPEED - 1]
+                coordinatesForNextMove = pathForHerbivore[PREDATOR_SPEED]
                 val currentEntity = map.getMap()[startCoordinates]
                 if (currentEntity is Creature) {
-                    tempMap.setEntity(currentEntity, Coordinates(coordinatesForNextMove.first, coordinatesForNextMove.second))
+                    tempMap.setEntity(currentEntity,Coordinates(coordinatesForNextMove.first, coordinatesForNextMove.second))
+                    tempMap.setEntity("",startCoordinates)
                 }
             }
         }

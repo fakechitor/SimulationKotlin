@@ -2,7 +2,6 @@ package entities
 
 import map.Coordinates
 import map.Map
-import map.MapRenderer
 import search.BreadthFirstSearch
 
 private const val HERBIVORE_SPEED = 3
@@ -19,14 +18,15 @@ class Herbivore() : Creature() {
         val pathForGrass = BreadthFirstSearch().bfs(startCoordinates, map, "Grass")
         val coordinatesForNextMove: Pair<Int, Int>
         if (!pathForGrass.isNullOrEmpty()) {
+            val currentEntity = map.getMap()[startCoordinates]
             if (pathForGrass.size <= HERBIVORE_ATTACK_RANGE) {
                 coordinatesForNextMove = pathForGrass.last()
                 tempMap = eatFood(startCoordinates, map, Coordinates(coordinatesForNextMove.first, coordinatesForNextMove.second))
             } else {
-                coordinatesForNextMove = pathForGrass[HERBIVORE_SPEED - 1]
-                val currentEntity = map.getMap()[startCoordinates]
+                coordinatesForNextMove = pathForGrass[HERBIVORE_SPEED]
                 if (currentEntity is Creature) {
-                    tempMap.setEntity(currentEntity, Coordinates(coordinatesForNextMove.first, coordinatesForNextMove.second))
+                    tempMap.setEntity(currentEntity,Coordinates(coordinatesForNextMove.first, coordinatesForNextMove.second))
+                    tempMap.setEntity("",startCoordinates)
                 }
             }
         }
@@ -35,13 +35,12 @@ class Herbivore() : Creature() {
 
     }
 
-    override fun eatFood(startCoordinates: Coordinates, map: Map, newCoordinates: Coordinates) : map.Map {
-        val newMap = map
+    override fun eatFood(startCoordinates: Coordinates, map: Map, newCoordinates: Coordinates): map.Map {
         val currentEntity = map.getMap()[startCoordinates]
         if (currentEntity != null && currentEntity is Creature) {
-            newMap.setEntity(currentEntity,newCoordinates)
-            newMap.setEntity("",startCoordinates)
+            map.setEntity(currentEntity, newCoordinates)
+            map.setEntity("", startCoordinates)
         }
-        return newMap
+        return map
     }
 }

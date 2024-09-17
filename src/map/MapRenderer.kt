@@ -1,12 +1,11 @@
 package map
 
 import Emoji
-import entities.Entities
 
 
 
 class MapRenderer {
-    val emojiRenderer = Emoji()
+    private val emojiRenderer = Emoji()
 
     fun renderMap(map : Map) {
         for (i in 1..AMOUNT_OF_ROWS){
