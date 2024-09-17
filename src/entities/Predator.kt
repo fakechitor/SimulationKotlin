@@ -4,13 +4,15 @@ import map.Coordinates
 import map.Map
 import search.BreadthFirstSearch
 
-private const val PREDATOR_SPEED = 2
-private const val PREDATOR_HEALTH_POINTS = 16
-private const val PREDATOR_ATTACK_RANGE = 2
+private const val PREDATOR_SPEED = 1
+private const val PREDATOR_MAX_HEALTH_POINTS = 20
+private const val PREDATOR_ATTACK_RANGE = PREDATOR_SPEED
+private const val HP_INCREASE_BY_FOOD = 8
+private const val HP_DECREASE_BY_HUNGER = 1
 
 class Predator() : Creature() {
     override var amountOfSpeed = PREDATOR_SPEED
-    override var healthPoints  = PREDATOR_HEALTH_POINTS
+    override var healthPoints  = PREDATOR_MAX_HEALTH_POINTS
     override val entityName = "Wolf"
     override fun makeMove(startCoordinates: Coordinates, map: map.Map): Map {
         var tempMap : Map = map
@@ -33,6 +35,10 @@ class Predator() : Creature() {
     }
 
     override fun eatFood(startCoordinates: Coordinates, map: Map, newCoordinates: Coordinates): Map {
+        this.healthPoints += HP_INCREASE_BY_FOOD
+        if (healthPoints > PREDATOR_MAX_HEALTH_POINTS){
+            healthPoints = PREDATOR_MAX_HEALTH_POINTS
+        }
         val newMap = map
         val currentEntity = map.getMap()[startCoordinates]
         if (currentEntity != null && currentEntity is Creature) {
@@ -40,5 +46,9 @@ class Predator() : Creature() {
             newMap.setEntity("",startCoordinates)
         }
         return newMap
+    }
+
+    override fun decreaseHealthPointsByHunger() {
+        this.healthPoints -= HP_DECREASE_BY_HUNGER
     }
 }

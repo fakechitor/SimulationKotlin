@@ -8,5 +8,5 @@ abstract class Creature() : Entity() {
     abstract var healthPoints: Int
     abstract fun makeMove(startCoordinates: map.Coordinates, map: map.Map): Map
     abstract fun eatFood(startCoordinates: map.Coordinates, map: map.Map, newCoordinates: map.Coordinates): Map
-
+    abstract fun decreaseHealthPointsByHunger()
 }
