@@ -1,9 +1,6 @@
 package search
 
-import entities.Creature
-import entities.Entities
-import entities.Entity
-import entities.Herbivore
+import entities.*
 import map.AMOUNT_OF_COLUMNS
 import map.AMOUNT_OF_ROWS
 import map.Coordinates
@@ -26,12 +23,12 @@ class BreadthFirstSearch {
         queue.add(pairOfStartCoordinates)
         checkedCells.add(pairOfStartCoordinates)
         parentMap[pairOfStartCoordinates] = null
-
+        var f = false
         while (queue.isNotEmpty()) {
             val current = queue.poll()
             val cellStatus = map.getCellStatus(Coordinates(current.first, current.second))
 
-            if (isCellOccupied(current, cellStatus, creature)) {
+            if (f == true && isCellOccupied(current, cellStatus, creature)) {
                 continue
             }
             else if (cellStatus.toString() == requiredEntity) {
@@ -42,6 +39,7 @@ class BreadthFirstSearch {
                 checkedCells.add(node)
                 queue.add(node)
                 parentMap[node] = current
+                f = true
             }
         }
         return null
@@ -49,7 +47,7 @@ class BreadthFirstSearch {
 
     private fun isCellOccupied(coordinatesPair: Pair<Int, Int>, currentCell : Any?, creature : String) : Boolean{
         val setOfObstacles = getObstaclesForCell(creature)
-        if (currentCell is Creature && currentCell.entityName in setOfObstacles){
+        if (currentCell.toString() in setOfObstacles){
             occupiedCells.add(coordinatesPair)
             return true
         }
@@ -73,7 +71,7 @@ class BreadthFirstSearch {
 
     private fun checkTypeOfCreature(startCoordinates: Coordinates, map: Map) : String{
         val cellStatus = map.getCellStatus(startCoordinates)
-        if (cellStatus is Herbivore){
+        if (cellStatus.toString() == "Rabbit"){
             return "Herbivore"
         }
         return "Predator"
@@ -120,3 +118,29 @@ class BreadthFirstSearch {
         return path
     }
 }
+
+//fun main() {
+//    val test = BreadthFirstSearch()
+//    val map = Map()
+//    val mymap = mutableMapOf(
+//        Coordinates(1,1) to "",
+//        Coordinates(1,2) to "",
+//        Coordinates(1,3) to "",
+//        Coordinates(1,4) to "",
+//        Coordinates(2,1) to Herbivore(),
+//        Coordinates(2,2) to "",
+//        Coordinates(2,3) to Grass(),
+//        Coordinates(2,4) to "",
+//        Coordinates(3,1) to Rock(),
+//        Coordinates(3,2) to Tree(),
+//        Coordinates(3,3) to Predator(),
+//        Coordinates(3,4) to "",
+//        Coordinates(4,1) to Predator(),
+//        Coordinates(4,2) to "",
+//        Coordinates(4,3) to "",
+//        Coordinates(4,4) to "",
+//    )
+//    map.setMap(mymap)
+//    val path= test.bfs(Coordinates(2,1),map,"Grass")
+//    println(path)
+//}
