@@ -6,6 +6,7 @@ import entities.Entities.Rock
 import entities.Entities.Tree
 import map.Coordinates
 import map.MapRenderer
+import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.random.Random
 
 // Codes for process user input
@@ -21,11 +22,13 @@ private val AMOUNT_OF_ENTITIES_FOR_SPAWN : kotlin.collections.Map<String, Int> =
     "Grass" to 40)
 
 class Simulation {
-    private var amountOfTurns : Int = 0
+    private var amountOfTurns : Int = 1
     private lateinit var map : Map
     private val gameData = GameData()
+    private var printFullGameInfoFlag = true
 
     fun startSimulation() {
+        printFullGameInfoFlag = true
         initSimulation()
         printGameInfo()
         askUserResponse()
@@ -35,7 +38,6 @@ class Simulation {
         amountOfTurns++
         turnActions()
         plantGrass()
-        println(gameData.getCurrentGameStats(map))
         checkGameState()
     }
 
@@ -48,23 +50,44 @@ class Simulation {
 
     private fun printGameInfo(){
         printMap()
-        println("Введите $START_LOOP_SIMULATION_CODE, чтобы запустить цикл симуляции")
-        println("Введите $NEXT_TURN_SIMULATION_CODE, чтобы запустить следующий ход симуляции")
-        println("Введите $STOP_SIMULATION_CODE, чтобы остановть симуляцию")
+        if (printFullGameInfoFlag){
+            println("Введите $START_LOOP_SIMULATION_CODE, чтобы запустить цикл симуляции")
+            println("Введите $NEXT_TURN_SIMULATION_CODE, чтобы запустить следующий ход симуляции")
+            println("Введите $STOP_SIMULATION_CODE, чтобы остановть симуляцию")
+        }
+        else{
+            println("Введите $STOP_SIMULATION_CODE, чтобы остановть симуляцию")
+        }
         println()
 
 
     }
 
     private fun startGameLoop(){
-        while (true){
-            //TODO
-            nextTurn()
-            printGameInfo()
-            Thread.sleep(500)
-            checkGameState()
+    val running = AtomicBoolean(true)
+        val gameLoopThread = Thread {
+            while (running.get()) {
+                nextTurn()
+                printGameInfo()
+                checkGameState()
+                Thread.sleep(750)
+            }
+            pauseSimulation()
         }
-    }
+        printFullGameInfoFlag = false
+        gameLoopThread.start()
+
+        while (running.get()) {
+            val input = readLine()
+            if (input == "3") {
+                running.set(false)
+            }
+        }
+        gameLoopThread.join()
+        printFullGameInfoFlag = true
+        askUserResponse()
+
+        }
 
     private fun getValidUserInput(): String {
         val validValues = listOf("1","2","3")
@@ -91,6 +114,7 @@ class Simulation {
     }
 
     private fun pauseSimulation() {
+        printFullGameInfoFlag = true
         println("Симуляция приостановлена")
         println("Введите $START_LOOP_SIMULATION_CODE, чтобы запустить цикл симуляции")
         println("Введите $NEXT_TURN_SIMULATION_CODE, чтобы запустить следующий ход симуляции")
@@ -100,8 +124,7 @@ class Simulation {
     private fun initSimulation(){
         map = Map()
         map.createMap()
-        initAllTypesOfEntities(map)
-        println(gameData.getCurrentGameStats(map))
+        initAllTypesOfEntities()
     }
 
     private fun checkGameState() {
@@ -109,13 +132,17 @@ class Simulation {
         if (currentGameData["Rabbit"] == 0){
             println("Симуляция завершена. Все зайцы вымерли :(")
             println()
-            amountOfTurns =0
+            println()
+            amountOfTurns = 1
+            println("Создана новая карта для симуляции:")
             startSimulation()
         }
         else if (currentGameData["Wolf"] == 0){
             println("Симуляция завершена. Все волки вымерли :(")
             println()
-            amountOfTurns =0
+            println()
+            amountOfTurns = 1
+            println("Создана новая карта для симуляции:")
             startSimulation()
 
         }
@@ -134,8 +161,8 @@ class Simulation {
             map.setEntity("",coordinates)
         }
     }
-    // TODO
-    private fun initAllTypesOfEntities(map: Map){
+
+    private fun initAllTypesOfEntities(){
         for (entity in Entities.entries){
             when(entity){
                 Rabbit -> {createEntity("Rabbit")}
