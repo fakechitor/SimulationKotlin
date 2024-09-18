@@ -34,6 +34,12 @@ class Simulation {
         askUserResponse()
     }
 
+    private fun initSimulation(){
+        map = Map()
+        map.createMap()
+        initAllTypesOfEntities()
+    }
+
     private fun nextTurn() {
         amountOfTurns++
         turnActions()
@@ -42,29 +48,8 @@ class Simulation {
     }
 
 
-    private fun printMap(){
-        println("Текущий ход: $amountOfTurns")
-        MapRenderer().renderMap(map)
-    }
-
-
-    private fun printGameInfo(){
-        printMap()
-        if (printFullGameInfoFlag){
-            println("Введите $START_LOOP_SIMULATION_CODE, чтобы запустить цикл симуляции")
-            println("Введите $NEXT_TURN_SIMULATION_CODE, чтобы запустить следующий ход симуляции")
-            println("Введите $STOP_SIMULATION_CODE, чтобы остановть симуляцию")
-        }
-        else{
-            println("Введите $STOP_SIMULATION_CODE, чтобы остановть симуляцию")
-        }
-        println()
-
-
-    }
-
     private fun startGameLoop(){
-    val running = AtomicBoolean(true)
+        val running = AtomicBoolean(true)
         val gameLoopThread = Thread {
             while (running.get()) {
                 nextTurn()
@@ -87,7 +72,29 @@ class Simulation {
         printFullGameInfoFlag = true
         askUserResponse()
 
+    }
+
+
+    private fun pauseSimulation() {
+        printFullGameInfoFlag = true
+        println("Симуляция приостановлена")
+        println("Введите $START_LOOP_SIMULATION_CODE, чтобы запустить цикл симуляции")
+        println("Введите $NEXT_TURN_SIMULATION_CODE, чтобы запустить следующий ход симуляции")
+        askUserResponse()
+    }
+
+    private fun askUserResponse() {
+        val userInput = getValidUserInput()
+        when(userInput){
+            "1" -> startGameLoop()
+            "2" -> {
+                nextTurn()
+                printGameInfo()
+                askUserResponse()
+            }
+            "3" -> pauseSimulation()
         }
+    }
 
     private fun getValidUserInput(): String {
         val validValues = listOf("1","2","3")
@@ -100,31 +107,44 @@ class Simulation {
         }
     }
 
-    private fun askUserResponse() {
-        val userInput = getValidUserInput()
-        when(userInput){
-            "1" -> startGameLoop()
-            "2" -> {
-                    nextTurn()
-                    printGameInfo()
-                    askUserResponse()
-            }
-            "3" -> pauseSimulation()
+    private fun printGameInfo(){
+        printMap()
+        if (printFullGameInfoFlag){
+            println("Введите $START_LOOP_SIMULATION_CODE, чтобы запустить цикл симуляции")
+            println("Введите $NEXT_TURN_SIMULATION_CODE, чтобы запустить следующий ход симуляции")
+            println("Введите $STOP_SIMULATION_CODE, чтобы остановть симуляцию")
         }
+        else{
+            println("Введите $STOP_SIMULATION_CODE, чтобы остановть симуляцию")
+        }
+        println()
+
+
     }
 
-    private fun pauseSimulation() {
-        printFullGameInfoFlag = true
-        println("Симуляция приостановлена")
-        println("Введите $START_LOOP_SIMULATION_CODE, чтобы запустить цикл симуляции")
-        println("Введите $NEXT_TURN_SIMULATION_CODE, чтобы запустить следующий ход симуляции")
-        askUserResponse()
+    private fun printMap(){
+        println("Текущий ход: $amountOfTurns")
+        MapRenderer().renderMap(map)
     }
 
-    private fun initSimulation(){
-        map = Map()
-        map.createMap()
-        initAllTypesOfEntities()
+
+
+    private fun turnActions() {
+        val currentMap = map.getMap().toMap()
+        val iterator = currentMap.entries.iterator()
+        while (iterator.hasNext()) {
+            val (coordinate, entity) = iterator.next()
+            if (entity is Herbivore) {
+                entity.decreaseHealthPointsByHunger()
+                removeDiedEntities(coordinate, entity)
+                map = entity.makeMove(coordinate, map)
+            }
+            else if (entity is Predator) {
+                entity.decreaseHealthPointsByHunger()
+                removeDiedEntities(coordinate, entity)
+                map = entity.makeMove(coordinate, map)
+            }
+        }
     }
 
     private fun checkGameState() {
@@ -148,6 +168,7 @@ class Simulation {
         }
     }
 
+
     private fun plantGrass(){
         val randomNumber = Random.nextInt(1, 3)
         if (randomNumber == 1){
@@ -155,13 +176,11 @@ class Simulation {
         }
     }
 
-
     private fun removeDiedEntities(coordinates: Coordinates, entity : Creature){
         if (entity.healthPoints <= 0 ){
             map.setEntity("",coordinates)
         }
     }
-
     private fun initAllTypesOfEntities(){
         for (entity in Entities.entries){
             when(entity){
@@ -184,23 +203,6 @@ class Simulation {
                     "Tree" -> map.createEntityOnRandomCoordinates(entities.Tree())
                     "Grass" -> map.createEntityOnRandomCoordinates(entities.Grass())
                 }
-            }
-        }
-    }
-    private fun turnActions() {
-        val currentMap = map.getMap().toMap()
-        val iterator = currentMap.entries.iterator()
-        while (iterator.hasNext()) {
-            val (coordinate, entity) = iterator.next()
-            if (entity is Herbivore) {
-                entity.decreaseHealthPointsByHunger()
-                removeDiedEntities(coordinate, entity)
-                map = entity.makeMove(coordinate, map)
-            }
-            else if (entity is Predator) {
-                entity.decreaseHealthPointsByHunger()
-                removeDiedEntities(coordinate, entity)
-                map = entity.makeMove(coordinate, map)
             }
         }
     }
