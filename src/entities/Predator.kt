@@ -14,7 +14,7 @@ class Predator() : Creature() {
     override var amountOfSpeed = PREDATOR_SPEED
     override var healthPoints  = PREDATOR_MAX_HEALTH_POINTS
     override val entityName = "Wolf"
-    override fun makeMove(startCoordinates: Coordinates, map: map.Map) {
+    override fun makeMove(startCoordinates: Coordinates, map: Map) {
 
         val pathForHerbivore = BreadthFirstSearch().bfs(startCoordinates, map, "Rabbit")
         val coordinatesForNextMove: Pair<Int, Int>
