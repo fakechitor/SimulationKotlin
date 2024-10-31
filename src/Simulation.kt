@@ -1,9 +1,6 @@
+import actions.InitActions
 import entities.*
 import map.Map
-import entities.Entities.*
-import entities.Entities.Grass
-import entities.Entities.Rock
-import entities.Entities.Tree
 import map.Coordinates
 import map.MapRenderer
 import java.util.concurrent.atomic.AtomicBoolean
@@ -14,16 +11,10 @@ private const val START_LOOP_SIMULATION_CODE =  1
 private const val NEXT_TURN_SIMULATION_CODE = 2
 private const val STOP_SIMULATION_CODE = 3
 
-private val AMOUNT_OF_ENTITIES_FOR_SPAWN : kotlin.collections.Map<String, Int> = mapOf(
-    "Rabbit" to 10,
-    "Wolf" to 4,
-    "Rock" to 10,
-    "Tree" to 10,
-    "Grass" to 40)
-
 class Simulation {
     private var amountOfTurns : Int = 1
     private lateinit var map : Map
+    private val initActions = InitActions()
     private val gameData = GameData()
     private var printFullGameInfoFlag = true
 
@@ -35,9 +26,10 @@ class Simulation {
     }
 
     private fun initSimulation(){
-        map = Map()
-        map.createMap()
-        initAllTypesOfEntities()
+        map = initActions.createSimulationMap()
+    //        map = Map()
+//        map.createMap()
+//        initAllTypesOfEntities()
     }
 
     private fun nextTurn() {
@@ -130,7 +122,7 @@ class Simulation {
 
 
     private fun turnActions() {
-        val currentMap = map.getMap().toMap()
+        val currentMap = map.map.toMap()
         val iterator = currentMap.entries.iterator()
         while (iterator.hasNext()) {
             val (coordinate, entity) = iterator.next()
@@ -181,29 +173,30 @@ class Simulation {
             map.setEntity("",coordinates)
         }
     }
-    private fun initAllTypesOfEntities(){
-        for (entity in Entities.entries){
-            when(entity){
-                Rabbit -> {createEntity("Rabbit")}
-                Wolf -> {createEntity("Wolf")}
-                Rock -> {createEntity("Rock")}
-                Tree -> {createEntity("Tree")}
-                Grass -> {createEntity("Grass")}
-            }
-        }
-    }
-    private fun createEntity(entity: String) {
-        val amountOfEntities = AMOUNT_OF_ENTITIES_FOR_SPAWN[entity]
-        if (amountOfEntities is Int) {
-            for (i in 1..amountOfEntities) {
-                when (entity) {
-                    "Rabbit" -> map.createEntityOnRandomCoordinates(Herbivore())
-                    "Wolf" -> map.createEntityOnRandomCoordinates(Predator())
-                    "Rock" -> map.createEntityOnRandomCoordinates(entities.Rock())
-                    "Tree" -> map.createEntityOnRandomCoordinates(entities.Tree())
-                    "Grass" -> map.createEntityOnRandomCoordinates(entities.Grass())
-                }
-            }
-        }
-    }
+//    private fun initAllTypesOfEntities(){
+//        for (entity in Entities.entries){
+//            when(entity){
+//                Rabbit -> {createEntity("Rabbit")}
+//                Wolf -> {createEntity("Wolf")}
+//                Rock -> {createEntity("Rock")}
+//                Tree -> {createEntity("Tree")}
+//                Grass -> {createEntity("Grass")}
+//            }
+//        }
+//    }
+
+//    private fun createEntity(entity: String) {
+//        val amountOfEntities = AMOUNT_OF_ENTITIES_FOR_SPAWN[entity]
+//        if (amountOfEntities is Int) {
+//            for (i in 1..amountOfEntities) {
+//                when (entity) {
+//                    "Rabbit" -> map.createEntityOnRandomCoordinates(Herbivore())
+//                    "Wolf" -> map.createEntityOnRandomCoordinates(Predator())
+//                    "Rock" -> map.createEntityOnRandomCoordinates(entities.Rock())
+//                    "Tree" -> map.createEntityOnRandomCoordinates(entities.Tree())
+//                    "Grass" -> map.createEntityOnRandomCoordinates(entities.Grass())
+//                }
+//            }
+//        }
+//    }
 }
