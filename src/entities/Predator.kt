@@ -14,38 +14,35 @@ class Predator() : Creature() {
     override var amountOfSpeed = PREDATOR_SPEED
     override var healthPoints  = PREDATOR_MAX_HEALTH_POINTS
     override val entityName = "Wolf"
-    override fun makeMove(startCoordinates: Coordinates, map: map.Map): Map {
-        var tempMap : Map = map
+    override fun makeMove(startCoordinates: Coordinates, map: map.Map) {
+
         val pathForHerbivore = BreadthFirstSearch().bfs(startCoordinates, map, "Rabbit")
         val coordinatesForNextMove: Pair<Int, Int>
         if (!pathForHerbivore.isNullOrEmpty()) {
             if (pathForHerbivore.size <= PREDATOR_ATTACK_RANGE) {
                 coordinatesForNextMove = pathForHerbivore.last()
-                tempMap = eatFood(startCoordinates, map, Coordinates(coordinatesForNextMove.first, coordinatesForNextMove.second))
+                eatFood(startCoordinates, map, Coordinates(coordinatesForNextMove.first, coordinatesForNextMove.second))
             } else {
                 coordinatesForNextMove = pathForHerbivore[PREDATOR_SPEED]
                 val currentEntity = map.map[startCoordinates]
                 if (currentEntity is Creature) {
-                    tempMap.setEntity(currentEntity,Coordinates(coordinatesForNextMove.first, coordinatesForNextMove.second))
-                    tempMap.setEntity("",startCoordinates)
+                    map.setEntity(currentEntity,Coordinates(coordinatesForNextMove.first, coordinatesForNextMove.second))
+                    map.setEntity("",startCoordinates)
                 }
             }
         }
-        return tempMap
     }
 
-    override fun eatFood(startCoordinates: Coordinates, map: Map, newCoordinates: Coordinates): Map {
+    override fun eatFood(startCoordinates: Coordinates, map: Map, newCoordinates: Coordinates) {
         this.healthPoints += HP_INCREASE_BY_FOOD
         if (healthPoints > PREDATOR_MAX_HEALTH_POINTS){
             healthPoints = PREDATOR_MAX_HEALTH_POINTS
         }
-        val newMap = map
         val currentEntity = map.map[startCoordinates]
         if (currentEntity != null && currentEntity is Creature) {
-            newMap.setEntity(currentEntity,newCoordinates)
-            newMap.setEntity("",startCoordinates)
+            map.setEntity(currentEntity,newCoordinates)
+            map.setEntity("",startCoordinates)
         }
-        return newMap
     }
 
     override fun decreaseHealthPointsByHunger() {
