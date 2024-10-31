@@ -1,41 +1,40 @@
 import actions.InitActions
-import entities.*
+import actions.MiscellaneousActions
+import actions.TurnActions
 import map.Map
-import map.Coordinates
-import map.MapRenderer
+import map.Renderer
 import java.util.concurrent.atomic.AtomicBoolean
-import kotlin.random.Random
 
 // Codes for process user input
-private const val START_LOOP_SIMULATION_CODE =  1
-private const val NEXT_TURN_SIMULATION_CODE = 2
-private const val STOP_SIMULATION_CODE = 3
+const val START_LOOP_SIMULATION_CODE =  1
+const val NEXT_TURN_SIMULATION_CODE = 2
+const val STOP_SIMULATION_CODE = 3
 
 class Simulation {
     private var amountOfTurns : Int = 1
     private lateinit var map : Map
     private val initActions = InitActions()
+    private val turnActions = TurnActions()
+    private val miscellaneousActions = MiscellaneousActions()
     private val gameData = GameData()
+    private val renderer = Renderer()
     private var printFullGameInfoFlag = true
 
     fun startSimulation() {
         printFullGameInfoFlag = true
         initSimulation()
-        printGameInfo()
+        renderer.printGameInfo(printFullGameInfoFlag, amountOfTurns, map)
         askUserResponse()
     }
 
     private fun initSimulation(){
         map = initActions.createSimulationMap()
-    //        map = Map()
-//        map.createMap()
-//        initAllTypesOfEntities()
     }
 
     private fun nextTurn() {
         amountOfTurns++
-        turnActions()
-        plantGrass()
+        turnActions.turnActions(map)
+        miscellaneousActions.plantGrass(map)
         checkGameState()
     }
 
@@ -45,9 +44,9 @@ class Simulation {
         val gameLoopThread = Thread {
             while (running.get()) {
                 nextTurn()
-                printGameInfo()
+                renderer.printGameInfo(printFullGameInfoFlag, amountOfTurns, map)
                 checkGameState()
-                Thread.sleep(750)
+                Thread.sleep(50)
             }
             pauseSimulation()
         }
@@ -63,7 +62,6 @@ class Simulation {
         gameLoopThread.join()
         printFullGameInfoFlag = true
         askUserResponse()
-
     }
 
 
@@ -76,127 +74,34 @@ class Simulation {
     }
 
     private fun askUserResponse() {
-        val userInput = getValidUserInput()
+        val userInput = miscellaneousActions.getValidUserInput()
         when(userInput){
             "1" -> startGameLoop()
             "2" -> {
                 nextTurn()
-                printGameInfo()
+                renderer.printGameInfo(printFullGameInfoFlag, amountOfTurns, map)
                 askUserResponse()
             }
             "3" -> pauseSimulation()
         }
     }
 
-    private fun getValidUserInput(): String {
-        val validValues = listOf("1","2","3")
-        while (true){
-            val userInput = readln()
-            if (userInput in validValues){
-                return userInput
-            }
-            println("Введите корректное значение! $START_LOOP_SIMULATION_CODE/$NEXT_TURN_SIMULATION_CODE/$STOP_SIMULATION_CODE")
-        }
-    }
-
-    private fun printGameInfo(){
-        printMap()
-        if (printFullGameInfoFlag){
-            println("Введите $START_LOOP_SIMULATION_CODE, чтобы запустить цикл симуляции")
-            println("Введите $NEXT_TURN_SIMULATION_CODE, чтобы запустить следующий ход симуляции")
-            println("Введите $STOP_SIMULATION_CODE, чтобы остановть симуляцию")
-        }
-        else{
-            println("Введите $STOP_SIMULATION_CODE, чтобы остановть симуляцию")
-        }
-        println()
-
-
-    }
-
-    private fun printMap(){
-        println("Текущий ход: $amountOfTurns")
-        MapRenderer().renderMap(map)
-    }
-
-
-
-    private fun turnActions() {
-        val currentMap = map.map.toMap()
-        val iterator = currentMap.entries.iterator()
-        while (iterator.hasNext()) {
-            val (coordinate, entity) = iterator.next()
-            if (entity is Herbivore) {
-                entity.decreaseHealthPointsByHunger()
-                removeDiedEntities(coordinate, entity)
-                map = entity.makeMove(coordinate, map)
-            }
-            else if (entity is Predator) {
-                entity.decreaseHealthPointsByHunger()
-                removeDiedEntities(coordinate, entity)
-                map = entity.makeMove(coordinate, map)
-            }
-        }
-    }
-
     private fun checkGameState() {
         val currentGameData = gameData.getCurrentGameStats(map)
-        if (currentGameData["Rabbit"] == 0){
+        if (currentGameData["Rabbit"] == 0) {
             println("Симуляция завершена. Все зайцы вымерли :(")
             println()
             println()
             amountOfTurns = 1
             println("Создана новая карта для симуляции:")
             startSimulation()
-        }
-        else if (currentGameData["Wolf"] == 0){
+        } else if (currentGameData["Wolf"] == 0) {
             println("Симуляция завершена. Все волки вымерли :(")
             println()
             println()
             amountOfTurns = 1
             println("Создана новая карта для симуляции:")
             startSimulation()
-
         }
     }
-
-
-    private fun plantGrass(){
-        val randomNumber = Random.nextInt(1, 3)
-        if (randomNumber == 1){
-            map.createEntityOnRandomCoordinates(entities.Grass())
-        }
-    }
-
-    private fun removeDiedEntities(coordinates: Coordinates, entity : Creature){
-        if (entity.healthPoints <= 0 ){
-            map.setEntity("",coordinates)
-        }
-    }
-//    private fun initAllTypesOfEntities(){
-//        for (entity in Entities.entries){
-//            when(entity){
-//                Rabbit -> {createEntity("Rabbit")}
-//                Wolf -> {createEntity("Wolf")}
-//                Rock -> {createEntity("Rock")}
-//                Tree -> {createEntity("Tree")}
-//                Grass -> {createEntity("Grass")}
-//            }
-//        }
-//    }
-
-//    private fun createEntity(entity: String) {
-//        val amountOfEntities = AMOUNT_OF_ENTITIES_FOR_SPAWN[entity]
-//        if (amountOfEntities is Int) {
-//            for (i in 1..amountOfEntities) {
-//                when (entity) {
-//                    "Rabbit" -> map.createEntityOnRandomCoordinates(Herbivore())
-//                    "Wolf" -> map.createEntityOnRandomCoordinates(Predator())
-//                    "Rock" -> map.createEntityOnRandomCoordinates(entities.Rock())
-//                    "Tree" -> map.createEntityOnRandomCoordinates(entities.Tree())
-//                    "Grass" -> map.createEntityOnRandomCoordinates(entities.Grass())
-//                }
-//            }
-//        }
-//    }
 }
