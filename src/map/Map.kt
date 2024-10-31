@@ -7,15 +7,8 @@ const val AMOUNT_OF_COLUMNS = 15
 const val AMOUNT_OF_ROWS = 10
 
 class Map {
-     private var map : MutableMap<Coordinates, Any> = mutableMapOf()
-
-    fun getMap(): MutableMap<Coordinates, Any> {
-        return map
-    }
-    fun setMap(map : MutableMap<Coordinates, Any>) {
-        this.map = map
-    }
-
+    val map : MutableMap<Coordinates, Any> = mutableMapOf()
+    //TODO remove getter
     fun createMap() : MutableMap<Coordinates, Any> {
         for (i in 1..AMOUNT_OF_ROWS) {
             for (j in 1..AMOUNT_OF_COLUMNS) {

@@ -24,7 +24,7 @@ class Predator() : Creature() {
                 tempMap = eatFood(startCoordinates, map, Coordinates(coordinatesForNextMove.first, coordinatesForNextMove.second))
             } else {
                 coordinatesForNextMove = pathForHerbivore[PREDATOR_SPEED]
-                val currentEntity = map.getMap()[startCoordinates]
+                val currentEntity = map.map[startCoordinates]
                 if (currentEntity is Creature) {
                     tempMap.setEntity(currentEntity,Coordinates(coordinatesForNextMove.first, coordinatesForNextMove.second))
                     tempMap.setEntity("",startCoordinates)
@@ -40,7 +40,7 @@ class Predator() : Creature() {
             healthPoints = PREDATOR_MAX_HEALTH_POINTS
         }
         val newMap = map
-        val currentEntity = map.getMap()[startCoordinates]
+        val currentEntity = map.map[startCoordinates]
         if (currentEntity != null && currentEntity is Creature) {
             newMap.setEntity(currentEntity,newCoordinates)
             newMap.setEntity("",startCoordinates)

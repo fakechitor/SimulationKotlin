@@ -20,7 +20,7 @@ class Herbivore() : Creature() {
         val pathForGrass = BreadthFirstSearch().bfs(startCoordinates, map, "Grass")
         val coordinatesForNextMove: Pair<Int, Int>
         if (!pathForGrass.isNullOrEmpty()) {
-            val currentEntity = map.getMap()[startCoordinates]
+            val currentEntity = map.map[startCoordinates]
             if (pathForGrass.size <= HERBIVORE_ATTACK_RANGE) {
                 coordinatesForNextMove = pathForGrass.last()
                 tempMap = eatFood(startCoordinates, map, Coordinates(coordinatesForNextMove.first, coordinatesForNextMove.second))
@@ -42,7 +42,7 @@ class Herbivore() : Creature() {
         if (healthPoints > HERBIVORE_MAX_HEALTH_POINTS){
             healthPoints = HERBIVORE_MAX_HEALTH_POINTS
         }
-        val currentEntity = map.getMap()[startCoordinates]
+        val currentEntity = map.map[startCoordinates]
         if (currentEntity != null && currentEntity is Creature) {
             map.setEntity(currentEntity, newCoordinates)
             map.setEntity("", startCoordinates)

@@ -16,7 +16,7 @@ class GameData {
 
     private fun updateGameStats(map : map.Map){
         val newEntityData = clearEntityDataValues(entityData)
-        for (cellStatus in map.getMap().values){
+        for (cellStatus in map.map.values){
             if (cellStatus is Entity) {
                 val previousAmount = newEntityData[cellStatus.entityName]
                 newEntityData[cellStatus.entityName] = previousAmount!! + 1
