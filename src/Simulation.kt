@@ -54,7 +54,7 @@ class Simulation {
         gameLoopThread.start()
 
         while (running.get()) {
-            val input = readLine()
+            val input = readlnOrNull()
             if (input == "3") {
                 running.set(false)
             }
